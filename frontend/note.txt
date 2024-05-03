@@ -1,0 +1,26 @@
+import React, { useState } from "react";
+import Modal from "./Modal";
+
+const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="header">
+      <div className="left">
+        <h1>Dashboard</h1>
+      </div>
+      <a href="#" className="report">
+        <i className="bx bx-cloud-download"></i>
+        <span onClick={() => setIsOpen(true)}>Ajouter un document</span>
+        <Modal open={isOpen} onClose={() => setIsOpen(false)}>
+          <form className="form-modal">
+            <h2>Nouveau fichier</h2>
+            <input type="file" />
+            <button type="submit">Ajouter le fichier</button>
+          </form>
+        </Modal>
+      </a>
+    </div>
+  );
+};
+
+export default Header;
