@@ -5,7 +5,7 @@ const Popup = ({ open, children, onClose }) => {
   return (
     <div className="popup">
       {children}
-      <i onClick={onClose} className="bx bx-x"></i>
+      <i onClick={onClose} className="bx bx-x closePopup"></i>
     </div>
   );
 };

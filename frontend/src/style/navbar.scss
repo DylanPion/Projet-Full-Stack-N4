@@ -1,5 +1,5 @@
 .content nav {
-  height: 56px;
+  height: 70px;
   background: var(--light);
   padding: 0 24px 0 0;
   display: flex;
@@ -8,7 +8,7 @@
   position: sticky;
   top: 0;
   left: 0;
-  z-index: 999;
+  z-index: 10;
 }
 
 .content nav::before {
@@ -27,7 +27,7 @@
 }
 
 .content nav form {
-  max-width: 400px;
+  max-width: 750px;
   width: 100%;
   margin-right: auto;
 }
@@ -35,17 +35,17 @@
 .content nav form .form-input {
   display: flex;
   align-items: center;
-  height: 36px;
+  height: 50px;
   margin-left: 20px;
+  border-radius: 36px;
+  background: var(--grey);
 }
 
 .content nav form .form-input input {
-  flex-grow: 1;
-  padding: 0 16px;
+  font-size: 18px;
   height: 100%;
   border: none;
-  background: var(--grey);
-  border-radius: 36px 0 0 36px;
+  background: transparent;
   outline: none;
   width: 100%;
   color: var(--dark);
@@ -57,17 +57,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--primary);
-  color: var(--light);
-  font-size: 18px;
+  color: var(--dark);
+  font-size: 24px;
   border: none;
   outline: none;
-  border-radius: 0 36px 36px 0;
+  border-radius: 36px;
   cursor: pointer;
+  margin-right: -10px;
 }
 
 .content nav .notif {
-  font-size: 20px;
+  font-size: 26px;
   position: relative;
 }
 
@@ -89,8 +89,8 @@
 }
 
 .content nav .profile img {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   object-fit: cover;
   border-radius: 50%;
 }

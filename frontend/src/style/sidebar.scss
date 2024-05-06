@@ -6,7 +6,7 @@
   width: 230px;
   height: 100%;
   z-index: 999;
-  overflow-x: hidden;
+  //overflow-x: hidden; cache ce qui dépasse de la nav nar
   scrollbar-width: none;
   transition: all 0.3s ease;
 }
@@ -18,7 +18,7 @@
 .sidebar .logo {
   font-size: 24px;
   font-weight: 700;
-  height: 56px;
+  height: 70px;
   display: flex;
   align-items: center;
   color: var(--primary);
@@ -56,7 +56,7 @@
   position: relative;
 }
 
-.sidebar .side-menu li.active::before {
+.sidebar .side-menu li::before {
   content: "";
   position: absolute;
   width: 40px;
@@ -95,7 +95,7 @@
 }
 
 .sidebar .side-menu li.active a {
-  color: var(--success);
+  color: var(--primary);
 }
 
 .sidebar.close .side-menu li a {
@@ -112,4 +112,33 @@
 
 .sidebar .side-menu li a.logout {
   color: var(--danger);
+}
+
+.newButton {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-gap: 5px;
+  color: var(--light);
+  font-weight: 500;
+  border-radius: 36px;
+  background: var(--primary);
+  width: 200px;
+  margin-top: 20px;
+  margin-bottom: -20px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.newButton:hover {
+  background: var(--primary-hover);
+}
+
+.newButton i {
+  font-size: 28px;
+}
+
+.newButton span {
+  cursor: pointer;
 }

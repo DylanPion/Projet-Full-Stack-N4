@@ -1,40 +1,46 @@
-import {
-  Route,
-  RouterProvider,
-  createBrowserRouter,
-  createRoutesFromElements,
-} from "react-router-dom";
+import React from "react";
+import { Route, Routes, BrowserRouter } from "react-router-dom";
 import Root from "./components/Root";
 import Layout from "./pages/Layout";
 import SecureRoute from "./components/SecureRoute";
-import Login from "./Pages/Login";
-import Main from "./components/Main";
-import Signup from "./Pages/Signup";
-
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route element={<Root />}>
-      <Route path="/dashboard" element={<Layout />}>
-        <Route
-          index
-          element={
-            <SecureRoute>
-              <div className="content">
-                <Main />
-              </div>
-            </SecureRoute>
-          }
-        />
-      </Route>
-      <Route index element={<Login />} />
-      <Route path="login" element={<Login />} />
-      <Route path="signup" element={<Signup />} />
-    </Route>
-  )
-);
+import Drive from "./pages/Drive";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Bucket from "./components/Bucket";
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Root />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/dashboard" element={<Layout />}>
+          <Route
+            index
+            path="drive"
+            element={
+              <SecureRoute>
+                <div className="content">
+                  <Drive />
+                </div>
+              </SecureRoute>
+            }
+          />
+          <Route
+            path="file/:bucketId"
+            element={
+              <SecureRoute>
+                <div className="content">
+                  <Bucket />
+                </div>
+              </SecureRoute>
+            }
+          />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

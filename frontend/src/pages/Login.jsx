@@ -18,7 +18,7 @@ const Login = () => {
       localStorage.setItem("user-email", response.data.email);
       console.log("Connexion réusite avec succès");
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/dashboard/drive");
       }, 500);
     } catch (error) {
       console.error("Erreur lors de la connexion :" + error);

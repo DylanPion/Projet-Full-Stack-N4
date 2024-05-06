@@ -1,8 +1,8 @@
 import React from "react";
 
-const BottomData = () => {
+const RecentFile = () => {
   return (
-    <div className="bottom-data">
+    <div className="recent-file">
       <div className="orders">
         <div className="header">
           <i className="bx bx-receipt"></i>
@@ -25,7 +25,7 @@ const BottomData = () => {
               </td>
               <td>14-08-2023</td>
               <td>
-                <span className="status completed">Completed</span>
+                <span className="status">Completed</span>
               </td>
             </tr>
             <tr>
@@ -34,7 +34,7 @@ const BottomData = () => {
               </td>
               <td>14-08-2023</td>
               <td>
-                <span className="status pending">Pending</span>
+                <span className="status">Pending</span>
               </td>
             </tr>
             <tr>
@@ -43,7 +43,7 @@ const BottomData = () => {
               </td>
               <td>14-08-2023</td>
               <td>
-                <span className="status process">Processing</span>
+                <span className="status">Processing</span>
               </td>
             </tr>
           </tbody>
@@ -53,4 +53,4 @@ const BottomData = () => {
   );
 };
 
-export default BottomData;
+export default RecentFile;

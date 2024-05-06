@@ -1,0 +1,50 @@
+.files-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 24px;
+  margin-top: 18px;
+}
+
+.file-title h1,
+.file-title span,
+.file-title a {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  color: var(--dark);
+  font-size: 36px;
+  font-weight: 600;
+}
+
+.file-title a:hover {
+  cursor: pointer;
+  color: var(--primary);
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  min-width: 300px;
+  padding: 15px 20px;
+  background: var(--light);
+  border-radius: 20px;
+  cursor: pointer;
+  position: relative;
+}
+
+.file-item h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.file-item i {
+  font-size: 25px;
+  margin-right: 15px;
+  color: var(--dark);
+}
+
+.file-item .bx-dots-vertical-rounded {
+  position: absolute;
+  right: 10px;
+}

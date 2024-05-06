@@ -6,13 +6,12 @@ const NavBar = () => {
     <nav>
       <form action="#">
         <div className="form-input">
-          <input type="search" placeholder="Rechercher dans le drive.." />
           <button className="search-btn" type="submit">
             <i className="bx bx-search"></i>
           </button>
+          <input type="search" placeholder="Rechercher dans Drive" />
         </div>
       </form>
-      <input type="checkbox" id="theme-toggle" hidden />
       <a href="#" className="notif">
         <i className="bx bx-bell"></i>
         <span className="count">12</span>
