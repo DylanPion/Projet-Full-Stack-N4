@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Modal from "./Modal";
 import Popup from "./Popup";
 import { CreateBucket } from "../services/BucketService";
+import { NavLink } from "react-router-dom";
 
 const SideBar = () => {
   const [isOpenPopup, setIsOpenPopup] = useState(false);
@@ -14,6 +15,7 @@ const SideBar = () => {
       const formData = new FormData(event.target);
       const data = Object.fromEntries(formData.entries());
       const response = await CreateBucket(data);
+      window.location.reload();
       console.log("Bucket crée avec succès");
     } catch (error) {
       console.error("Erreur lors de la création du bucket :", error);
@@ -31,7 +33,51 @@ const SideBar = () => {
         <i className="bx bx-plus"></i>
         <span onClick={() => setIsOpenPopup(true)}> Nouveau</span>
       </div>
-      <Popup open={isOpenPopup} onClose={() => setIsOpenPopup(false)}>
+      <ul className="side-menu">
+        <li>
+          <NavLink to="/dashboard" className="link">
+            <i className="bx bx-home"></i>Accueil
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/dashboard/drive" className="link">
+            <i className="bx bx-hdd"></i>Mon drive
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/dashboard/shared" className="link">
+            <i className="bx bx-group"></i>Partagés avec moi
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/dashboard/trash" className="link">
+            <i className="bx bx-trash"></i>Corbeile
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/dashboard/setting" className="link">
+            <i className="bx bx-cog"></i>Paramètre
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/dashboard/storage" className="link">
+            <i className="bx bx-cloud"></i>Espace de stockage
+          </NavLink>
+        </li>
+      </ul>
+      <ul className="side-menu">
+        <li>
+          <NavLink to="/logout" className="link logout">
+            <i className="bx bx-log-out-circle"></i>
+            Logout
+          </NavLink>
+        </li>
+      </ul>
+      <Popup
+        open={isOpenPopup}
+        onClose={() => setIsOpenPopup(false)}
+        style="popup"
+      >
         <ul>
           <li>
             <i className="bx bx-folder-plus"></i>
@@ -72,46 +118,6 @@ const SideBar = () => {
           </li>
         </ul>
       </Popup>
-      <ul className="side-menu">
-        <li>
-          <a href="/dashboard">
-            <i className="bx bx-home"></i>Accueil
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i className="bx bx-hdd"></i>Mon drive
-          </a>
-        </li>
-        <li className="active">
-          <a href="#">
-            <i className="bx bx-group"></i>Partagés avec moi
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i className="bx bx-trash"></i>Corbeile
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i className="bx bx-cog"></i>Paramètre
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i className="bx bx-cloud"></i>Espace de stockage
-          </a>
-        </li>
-      </ul>
-      <ul className="side-menu">
-        <li>
-          <a href="#" className="logout">
-            <i className="bx bx-log-out-circle"></i>
-            Logout
-          </a>
-        </li>
-      </ul>
     </div>
   );
 };

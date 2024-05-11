@@ -14,13 +14,15 @@ const Drive = () => {
   };
 
   return (
-    <main className={isDragOver ? "dragover" : ""}>
-      <BucketList
-        onDragOver={handleBucketListDragOver}
-        onDragLeave={handleBucketListDragLeave}
-      />
-      <RecentFile />
-    </main>
+    <div className="content">
+      <main className={isDragOver ? "dragover" : ""}>
+        <BucketList
+          onDragOver={handleBucketListDragOver}
+          onDragLeave={handleBucketListDragLeave}
+        />
+        <RecentFile />
+      </main>
+    </div>
   );
 };
 

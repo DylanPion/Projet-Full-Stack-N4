@@ -21,9 +21,7 @@ function App() {
             path="drive"
             element={
               <SecureRoute>
-                <div className="content">
-                  <Drive />
-                </div>
+                <Drive />
               </SecureRoute>
             }
           />

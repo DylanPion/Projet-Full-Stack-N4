@@ -5,7 +5,7 @@
   transform: translate(-50%, -50%);
   background-color: #fff;
   padding: 50px;
-  z-index: 1000;
+  z-index: 9999;
   border-radius: 15px;
 }
 
@@ -31,7 +31,7 @@
 }
 
 .modal button:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-hover);
 }
 
 .modal form {
@@ -49,6 +49,7 @@
 
 .modal form h2 {
   color: var(--dark);
+  margin-bottom: 5px;
 }
 
 #closeModal {

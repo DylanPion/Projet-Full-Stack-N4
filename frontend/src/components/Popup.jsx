@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
-const Popup = ({ open, children, onClose }) => {
+const Popup = ({ open, children, onClose, style }) => {
   if (!open) return null;
   return (
-    <div className="popup">
+    <div className={style}>
       {children}
-      <i onClick={onClose} className="bx bx-x closePopup"></i>
+      <i onClick={onClose} className="bx bx-x"></i>
     </div>
   );
 };

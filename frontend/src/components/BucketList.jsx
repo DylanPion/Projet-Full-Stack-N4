@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   DeleteBucket,
   GetBucketList,
@@ -11,12 +11,12 @@ import { Link } from "react-router-dom";
 
 const BucketList = ({ onDragOver, onDragLeave }) => {
   const [bucketList, setBucketList] = useState([]);
-  const [isOpenPopup, setIsOpenPopup] = useState(false);
+  const [openBucketId, setOpenBucketId] = useState(null); // État pour stocker l'ID du bucket dont le menu est ouvert
   const [isOpenEditFolder, setIsOpenEditFolder] = useState(false);
-  const [editingBucketId, setEditingBucketId] = useState(null); // État pour stocker l'ID du dossier en cours d'édition
+  const [editingBucketId, setEditingBucketId] = useState(null);
   const [isOpenDeleteFolder, setIsOpenDeleteFolder] = useState(false);
   const [deletingBucketId, setDeletingBucketId] = useState(null);
-  const [isFileOver, setIsFileOver] = useState(false); // Etat pour stocker si un fichier est survolé
+  const [isFileOver, setIsFileOver] = useState(false);
 
   // Get
   useEffect(() => {
@@ -41,7 +41,11 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
       await UpdateBucket(data, bucketId);
       console.log("Bucket modifié avec succès");
       setIsOpenEditFolder(false);
-      window.location.reload();
+      // Mettre à jour la liste des dossiers sans recharger la page
+      const updatedBucketList = bucketList.map((bucket) =>
+        bucket.id === bucketId ? { ...bucket, ...data } : bucket
+      );
+      setBucketList(updatedBucketList);
     } catch (error) {
       console.error("Erreur lors de la modification du bucket :", error);
     }
@@ -88,6 +92,10 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
     }
   };
 
+  const togglePopup = (bucketId) => {
+    setOpenBucketId(bucketId === openBucketId ? null : bucketId);
+  };
+
   return (
     <>
       <div className="bucket-list-title">
@@ -101,34 +109,42 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
             key={bucket.id}
             onDrop={(event) => handleDrop(event, bucket.id)}
             onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave} // Ajouter le gestionnaire d'événement DragLeave
-            className={isFileOver ? "file-over" : ""} // Utiliser l'état pour conditionner le style
+            onDragLeave={handleDragLeave}
+            className={`link ${isFileOver ? "file-over" : ""}`}
           >
-            <Link key={bucket.id} to={`/dashboard/file/${bucket.id}`}>
+            <Link to={`/dashboard/file/${bucket.id}`}>
               <i className="bx bxs-folder"></i>
               <h3>{bucket.label}</h3>
             </Link>
 
             <i
               className="bx bx-dots-vertical-rounded"
-              onClick={() => {
-                setIsOpenPopup(true);
-                setEditingBucketId(bucket.id); // Définir l'ID du dossier en cours de modification lors du clic sur l'icône
-              }}
+              onClick={() => togglePopup(bucket.id)}
             ></i>
-            <Popup open={isOpenPopup} onClose={() => setIsOpenPopup(false)}>
+            <Popup
+              open={openBucketId === bucket.id}
+              onClose={() => setOpenBucketId(null)}
+              style="popup-bucket"
+            >
               <ul className="infos-bucket">
-                <li onClick={() => setIsOpenEditFolder(true)}>
-                  Modification du dossier
+                <li
+                  onClick={() => {
+                    setIsOpenEditFolder(true);
+                    setEditingBucketId(bucket.id);
+                  }}
+                >
+                  <i className="bx bxs-edit"></i>
+                  <span>Modification du dossier</span>
                 </li>
+                <div className="separator"></div>
                 <Modal
                   open={isOpenEditFolder}
                   onClose={() => setIsOpenEditFolder(false)}
                 >
                   <form
                     className="form-modal"
-                    onSubmit={
-                      (event) => handleEditSubmit(event, editingBucketId) // Passer l'ID du dossier en cours de modification à la fonction handleEditSubmit
+                    onSubmit={(event) =>
+                      handleEditSubmit(event, editingBucketId)
                     }
                   >
                     <h2>Modifier le dossier</h2>
@@ -140,20 +156,24 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
                     <button type="submit">Modifier le document</button>
                   </form>
                 </Modal>
-                <li onClick={() => setIsOpenDeleteFolder(true)}>
-                  Suppression du dossier
+                <li
+                  onClick={() => {
+                    setIsOpenDeleteFolder(true);
+                    setDeletingBucketId(bucket.id);
+                  }}
+                >
+                  <i className="bx bx-trash"></i>
+                  <span>Suppression du dossier</span>
                 </li>
                 <Modal
                   open={isOpenDeleteFolder}
-                  onClose={() => setIsOpenDeletingFolder(false)}
+                  onClose={() => setIsOpenDeleteFolder(false)}
                 >
                   <form
                     className="form-modal"
-                    onSubmit={
-                      (event) => handleDeleteSubmit(deletingBucketId) // Passer l'ID du dossier en cours de suppression à la fonction handleEditSubmit
-                    }
+                    onSubmit={(event) => handleDeleteSubmit(deletingBucketId)}
                   >
-                    <h2>Voulez vous vraiment supprimer le dossier ?</h2>
+                    <h2>Voulez-vous vraiment supprimer le dossier ?</h2>
                     <button onClick={() => setIsOpenDeleteFolder(false)}>
                       Annuler
                     </button>

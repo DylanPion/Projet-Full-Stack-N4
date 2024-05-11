@@ -34,21 +34,21 @@ const Bucket = () => {
       case "doc":
         return <i className="bx bxs-file-doc"></i>;
       case "html":
-        return <i class="bx bxs-file-html"></i>;
+        return <i className="bx bxs-file-html"></i>;
       case "css":
-        return <i class="bx bxs-file-css"></i>;
+        return <i className="bx bxs-file-css"></i>;
       case "js":
-        return <i class="bx bxs-file-js"></i>;
+        return <i className="bx bxs-file-js"></i>;
       case "json":
-        return <i class="bx bxs-file-json"></i>;
+        return <i className="bx bxs-file-json"></i>;
       case "md":
-        return <i class="bx bxs-file-md"></i>;
+        return <i className="bx bxs-file-md"></i>;
       case "txt":
-        return <i class="bx bxs-file-txt"></i>;
+        return <i className="bx bxs-file-txt"></i>;
       case "png":
-        return <i class="bx bxs-file-png"></i>;
+        return <i className="bx bxs-file-png"></i>;
       case "jpg":
-        return <i class="bx bxs-file-jpg"></i>;
+        return <i className="bx bxs-file-jpg"></i>;
       default:
         return <i className="bx bxs-file"></i>;
     }
