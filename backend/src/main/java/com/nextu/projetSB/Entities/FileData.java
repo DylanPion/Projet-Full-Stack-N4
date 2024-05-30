@@ -12,9 +12,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class FileData {
     @Id
     private String id;
+    private String fileName;
     private String label;
-    private String description;
     private String pathFile;
     @Version
     private Long version;
+    private String userId;
 }

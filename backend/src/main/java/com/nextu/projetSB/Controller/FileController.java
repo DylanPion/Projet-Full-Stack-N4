@@ -1,5 +1,7 @@
 package com.nextu.projetSB.Controller;
 
+import com.nextu.projetSB.Entities.Bucket;
+import com.nextu.projetSB.Entities.FileData;
 import com.nextu.projetSB.Entities.User;
 import com.nextu.projetSB.Entities.UserDetailsImpl;
 import com.nextu.projetSB.Exceptions.FileContentException;
@@ -20,6 +22,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +33,7 @@ public class FileController {
     private final FileService fileService;
     private final UserService userService;
     private final StorageService storageService;
+    private final BucketService bucketService;
 
     //Endpoint pour récupérer un fichier par son nom.
     @GetMapping(value = "/{name}")
@@ -74,12 +79,27 @@ public class FileController {
             return ResponseEntity.badRequest().body("Le fichier est vide");
         }
         try {
-            // Utilisez la méthode copyFile pour sauvegarder le fichier
-            String fileNameDest = storageService.save(file, bucketId);
+            // Utilisez la méthode save pour sauvegarder le fichier
+            String fileNameDest = storageService.save(file, bucketId, user.getId().toString());
             return ResponseEntity.ok("Le fichier '" + fileNameDest + "' a été téléchargé avec succès.");
         } catch (FileContentException e) {
             throw new RuntimeException(e);
-//            return ResponseEntity.status(500).body("Erreur lors du téléchargement du fichier : " + e.getMessage());
+        }
+    }
+
+    // Récupère la liste des fichiers d'un utilisateur à partir de l'identifiant du bucket.
+    @GetMapping(value = "/{bucketId}", produces = { "application/json", "application/xml" })
+    public ResponseEntity<List<FileData>> getUserFiles(@PathVariable String bucketId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User user = userService.findUserById(userDetails.getId());
+
+        try {
+            Bucket bucket = bucketService.findById(bucketId);
+            List<FileData> fileList = bucket.getFiles();
+            return ResponseEntity.ok(fileList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }

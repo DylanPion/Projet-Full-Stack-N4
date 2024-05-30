@@ -69,7 +69,7 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
       console.log(event.dataTransfer.files[0]);
       const formData = new FormData();
       formData.append("file", event.dataTransfer.files[0]);
-      console.log(formData);
+      console.log("test" + formData);
       await AddFile(formData, bucketId); // Télécharger le fichier
     } catch (error) {
       console.error("Erreur lors du glisser-déposer des fichiers :", error);

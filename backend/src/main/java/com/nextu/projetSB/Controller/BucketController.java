@@ -6,6 +6,7 @@ import com.nextu.projetSB.Entities.Bucket;
 import com.nextu.projetSB.Entities.User;
 import com.nextu.projetSB.Entities.UserDetailsImpl;
 import com.nextu.projetSB.Service.BucketService;
+import com.nextu.projetSB.Service.StorageService;
 import com.nextu.projetSB.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

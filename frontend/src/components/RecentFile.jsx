@@ -1,6 +1,12 @@
-import React from "react";
-
+import React, { useContext, useEffect } from "react";
+import { FileContext } from "../context/FileContext";
 const RecentFile = () => {
+  // Créer une méthode qui affiche les fichiers les plus récent
+  // Mettre à jour celle-ci quand un nouveau fichier et présent
+  // Rediriger vers les fichiers quand je clique dessus
+  // Paginations 10 éléments par page
+  // const test = useContext(FileContext);
+
   return (
     <div className="recent-file">
       <div className="orders">

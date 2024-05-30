@@ -137,12 +137,11 @@ public class UserService {
      * @param fileName Le nom du fichier à sauvegarder.
      * @throws Exception Si une erreur survient lors de la sauvegarde du fichier.
      */
-    public void saveFileByUserId(String userId, String fileName) throws Exception {
+  /*  public void saveFileByUserId(String userId, String fileName) throws Exception {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             FileData file = new FileData();
             file.setLabel(fileName);
-            file.setDescription(fileName);
             FileData fileSaved = fileRepository.save(file);
             user.addFile(fileSaved);
             userRepository.save(user);
@@ -150,7 +149,7 @@ public class UserService {
             throw new Exception("La sauvegarde du fichier pour l'utilisateur :" + userId + " a rencontré une erreur");
         }
     }
-
+*/
     /**
      * Crée un objet UserGetDTO à partir d'un objet User.
      *

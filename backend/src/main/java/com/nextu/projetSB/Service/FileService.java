@@ -1,9 +1,12 @@
 package com.nextu.projetSB.Service;
 
+import com.nextu.projetSB.Entities.FileData;
 import com.nextu.projetSB.Repositories.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -21,5 +24,9 @@ public class FileService {
         // Utilise le repository pour rechercher un fichier par son label (nom)
         return fileRepository.findByLabel(fileName) != null;
         // Retourne true si un fichier correspondant est trouvé, sinon false
+    }
+
+    public List<FileData> getFileList(){
+        return fileRepository.findAll();
     }
 }

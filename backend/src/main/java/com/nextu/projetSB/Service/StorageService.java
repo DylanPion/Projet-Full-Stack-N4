@@ -2,6 +2,7 @@ package com.nextu.projetSB.Service;
 
 import com.nextu.projetSB.Entities.Bucket;
 import com.nextu.projetSB.Entities.FileData;
+import com.nextu.projetSB.Entities.User;
 import com.nextu.projetSB.Exceptions.FileContentException;
 import com.nextu.projetSB.Repositories.BucketRepository;
 import com.nextu.projetSB.Repositories.FileRepository;
@@ -19,6 +20,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service responsable de la gestion du stockage des fichiers dans le système de fichiers.
@@ -55,8 +58,8 @@ public class StorageService {
      * @return Le nom du fichier sauvegardé.
      * @throws FileContentException Si une erreur survient lors de la sauvegarde du fichier.
      */
-    public String save(MultipartFile file, String bucketId) throws FileContentException {
-        return copyFile(file, bucketId );
+    public String save(MultipartFile file, String bucketId, String user) throws FileContentException {
+        return copyFile(file, bucketId, user);
     }
 
     /**
@@ -66,15 +69,17 @@ public class StorageService {
      * @return Le nom du fichier copié.
      * @throws FileContentException Si une erreur survient lors de la copie du fichier.
      */
-    private String copyFile(MultipartFile file, String bucketId) throws FileContentException {
+    private String copyFile(MultipartFile file, String bucketId, String userId) throws FileContentException {
         var fileNameDest = FileUtils.generateStringFromDate(FileUtils.getExtension(file.getOriginalFilename()));
         String filePathDest = SERVER_LOCATION + fileNameDest;
 
         try {
             Files.copy(file.getInputStream(), this.root.resolve(fileNameDest));
             FileData newFile = new FileData();
+            newFile.setFileName(file.getOriginalFilename());
             newFile.setLabel(fileNameDest);
             newFile.setPathFile(filePathDest);
+            newFile.setUserId((userId));
             Bucket bucket = bucketService.findById(bucketId);
             bucket.addFile(fileRepository.save(newFile));
             bucketRepository.save(bucket);

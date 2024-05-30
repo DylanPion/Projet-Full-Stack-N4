@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { GetBucketById } from "../services/BucketService";
-import { FileList } from "../services/FileService";
+import { GetFileList } from "../services/FileService";
 
 const Bucket = () => {
   const [bucket, setBucket] = useState({});
@@ -12,7 +12,7 @@ const Bucket = () => {
     const getData = async (bucketId) => {
       try {
         const responseBucket = await GetBucketById(bucketId);
-        const responseFileList = await FileList(bucketId);
+        const responseFileList = await GetFileList(bucketId);
         setBucket(responseBucket.data);
         setFileList(responseFileList.data);
         console.log(responseFileList.data);

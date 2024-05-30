@@ -92,6 +92,7 @@ public class UserController {
      * @param file Le fichier à ajouter.
      * @return ResponseEntity avec le nom du fichier ajouté s'il a été ajouté avec succès, sinon une réponse 400 avec un message d'erreur.
      */
+    /*
     @PostMapping(value = "/{id}/file")
     public ResponseEntity<String> saveFile(@PathVariable String id, @RequestParam MultipartFile file) {
         String messageError = "";
@@ -104,4 +105,5 @@ public class UserController {
         }
         return ResponseEntity.badRequest().body(messageError);
     }
+    */
 }
