@@ -34,15 +34,11 @@ public class UserController {
      * @param userCreateDTO Les données pour créer l'utilisateur.
      * @return ResponseEntity contenant les détails de l'utilisateur créé.
      */
-    @PostMapping(value = "/", produces = { "application/json", "application/xml" })
-    public ResponseEntity<UserGetDTO> create(@RequestBody UserCreateDTO userCreateDTO) {
-        User user = new User();
-        user.setFirstName(userCreateDTO.getFirstName());
-        user.setLastName(userCreateDTO.getLastName());
-        user.setLogin(userCreateDTO.getLogin());
-        user.setPassword(encoder.encode(userCreateDTO.getPassword()));
-        return ResponseEntity.ok(userService.create(user));
-    }
+   /* @PostMapping(value = "/", produces = { "application/json", "application/xml" })
+    public ResponseEntity<String> create(@RequestBody UserCreateDTO userCreateDTO) {
+        userService.create(userCreateDTO);
+        return ResponseEntity.ok("L'utilisateur a bien été créé");
+    }*/ // C'est authcontroller qui gère la création
 
     /**
      * Récupère un utilisateur par son ID.

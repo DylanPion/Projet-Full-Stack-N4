@@ -1,13 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Modal from "./Modal";
 import Popup from "./Popup";
 import { CreateBucket } from "../services/BucketService";
 import { NavLink } from "react-router-dom";
+import Toast from "./Toast";
 
 const SideBar = () => {
   const [isOpenPopup, setIsOpenPopup] = useState(false);
   const [isOpenFolderModal, setIsOpenFolderModal] = useState(false);
   const [isOpenFileModal, setIsOpenFileModal] = useState(false);
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -15,8 +18,9 @@ const SideBar = () => {
       const formData = new FormData(event.target);
       const data = Object.fromEntries(formData.entries());
       const response = await CreateBucket(data);
+      setToastMessage("bucketCreate");
+      setToastOpen(true);
       window.location.reload();
-      console.log("Bucket crée avec succès");
     } catch (error) {
       console.error("Erreur lors de la création du bucket :", error);
     }
@@ -34,11 +38,6 @@ const SideBar = () => {
         <span onClick={() => setIsOpenPopup(true)}> Nouveau</span>
       </div>
       <ul className="side-menu">
-        <li>
-          <NavLink to="/dashboard" className="link">
-            <i className="bx bx-home"></i>Accueil
-          </NavLink>
-        </li>
         <li>
           <NavLink to="/dashboard/drive" className="link">
             <i className="bx bx-hdd"></i>Mon drive
@@ -118,6 +117,11 @@ const SideBar = () => {
           </li>
         </ul>
       </Popup>
+      <Toast
+        open={toastOpen}
+        onClose={() => setToastOpen(false)}
+        toast={toastMessage}
+      />
     </div>
   );
 };

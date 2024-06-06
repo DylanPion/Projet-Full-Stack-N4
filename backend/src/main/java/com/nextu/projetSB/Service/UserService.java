@@ -1,10 +1,12 @@
 package com.nextu.projetSB.Service;
 
+import com.mongodb.DuplicateKeyException;
 import com.nextu.projetSB.Dto.UserCreateDTO;
 import com.nextu.projetSB.Dto.UserGetDTO;
 import com.nextu.projetSB.Entities.FileData;
 import com.nextu.projetSB.Entities.SignUpRequest;
 import com.nextu.projetSB.Entities.User;
+import com.nextu.projetSB.Exceptions.UserException;
 import com.nextu.projetSB.Repositories.FileRepository;
 import com.nextu.projetSB.Repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,16 +26,27 @@ public class UserService {
 
     // Inscript utilisateur
     public User registerUser(SignUpRequest signUpRequest){
-        User user = new User();
-        user.setLogin(signUpRequest.getLogin());
-        user.setPassword(encoder.encode(signUpRequest.getPassword()));
-        user.setLastName(signUpRequest.getLastName());
-        user.setFirstName(signUpRequest.getFirstName());
+        try {
 
-        userRepository.save(user);
-        return user;
+            /*if (userRepository.findByLogin(signUpRequest.getLogin()) != null){
+                throw new UserException("Login déjà utilisé");
+            }*/
+            User user = new User();
+            user.setLogin(signUpRequest.getLogin());
+            user.setPassword(encoder.encode(signUpRequest.getPassword()));
+            user.setLastName(signUpRequest.getLastName());
+            user.setFirstName(signUpRequest.getFirstName());
+
+            userRepository.save(user);
+            return user;
+
+        }   catch (Exception ex) {
+            throw new RuntimeException("Erreur lors de la création de l'utilisateur", ex);
+        }
     }
-
+    public boolean isUserExists(String email) {
+        return userRepository.findByLogin(email) != null;
+    }
 
     /**
      * Récupère un utilisateur grâce à son ID.
@@ -62,17 +75,17 @@ public class UserService {
     /**
      * Crée un utilisateur et retourne ses informations sous forme de DTO.
      *
-     * @param user L'utilisateur à créer.
      * @return Un objet UserGetDTO représentant les informations de l'utilisateur créé.
      * @throws RuntimeException Si une erreur survient lors de la création de l'utilisateur.
      */
-    public UserGetDTO create(User user) {
-        try {
-            User userAfterSave = userRepository.save(user);
-            return getUserGetDTO(userAfterSave);
-        } catch (Exception ex) {
-            throw new RuntimeException("Erreur lors de la création de l'utilisateur", ex);
-        }
+    public User create(UserCreateDTO userDTO) {
+            User user = new User();
+            user.setFirstName(userDTO.getFirstName());
+            user.setLastName(userDTO.getLastName());
+            user.setLogin(userDTO.getLogin());
+            user.setPassword(encoder.encode(userDTO.getPassword()));
+            userRepository.save(user);
+            return user;
     }
 
     /**

@@ -1,0 +1,66 @@
+.wrapper {
+  position: fixed;
+  width: 500px;
+  top: 90%;
+  right: 30px;
+  z-index: 10000;
+  overflow: hidden; /* Pour éviter le débordement de l'animation */
+
+  .toast {
+    width: 100%;
+    height: 80px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 7px;
+    display: grid;
+    grid-template-columns: 1.3fr 6fr 0.5fr;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    animation: slideIn 0.5s ease-out, slideOut 0.5s ease-out 3s forwards; /* Combinaison des animations */
+
+    i {
+      font-size: 32px;
+    }
+
+    p {
+      font-size: 20px;
+    }
+
+    .bx-check {
+      color: #47d764;
+    }
+  }
+}
+
+.blue {
+  border-left: 3px solid #4e45fa;
+}
+.green {
+  border-left: 3px solid #47d764;
+}
+.red {
+  border-left: 3px solid #c90707;
+}
+
+/* Animation pour faire apparaître le toast */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%); /* Commence en dehors de l'écran à droite */
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0); /* Vient à sa position d'origine */
+    opacity: 1;
+  }
+}
+
+/* Animation pour faire disparaître le toast */
+@keyframes slideOut {
+  from {
+    transform: translateX(0); /* Commence à sa position d'origine */
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%); /* Sort de l'écran vers la droite */
+    opacity: 0;
+  }
+}

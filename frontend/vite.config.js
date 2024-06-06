@@ -5,9 +5,11 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
+    host: true,
     proxy: {
       "/api": {
-        target: "http://localhost:8080/", // met en commun le port de l'url du front avec le back pour éviter le CROSS
+        //target: "http://spring-boot-container:8080/", // met en commun le port de l'url du front avec le back pour éviter le CROSS
+        target: "http://backend-service.fullstack-n4:8080",
         changeOrigin: true,
       },
     },

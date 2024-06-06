@@ -1,0 +1,38 @@
+@charset "UTF-8";
+.content main {
+  width: 100%;
+  padding: 36px 24px;
+  max-height: calc(100vh - 56px);
+}
+
+main.dragover {
+  height: 100vh;
+  background-color: #e4e2e2;
+  transition: opacity 0.3s ease;
+}
+
+.message-dragover {
+  position: fixed;
+  z-index: 1000;
+  bottom: -100px;
+  left: 50%;
+  width: 300px;
+  border: 1px solid var(--primary);
+  border-radius: 75px;
+  background: var(--primary);
+  color: white;
+  font-size: 14px;
+  padding: 20px 30px;
+  text-align: center;
+  transition: transform 0.5s ease, bottom 0.5s ease;
+  animation: slideUp 0.5s forwards;
+}
+
+@keyframes slideUp {
+  from {
+    bottom: -100px; /* Départ depuis le bas */
+  }
+  to {
+    bottom: 50px; /* Arrivée à la position finale */
+  }
+}/*# sourceMappingURL=main.css.map */

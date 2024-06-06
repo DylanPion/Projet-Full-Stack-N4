@@ -7,37 +7,40 @@ import Drive from "./pages/Drive";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Bucket from "./components/Bucket";
+import { FileProvider } from "./context/FileContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Root />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<Layout />}>
-          <Route
-            index
-            path="drive"
-            element={
-              <SecureRoute>
-                <Drive />
-              </SecureRoute>
-            }
-          />
-          <Route
-            path="file/:bucketId"
-            element={
-              <SecureRoute>
-                <div className="content">
-                  <Bucket />
-                </div>
-              </SecureRoute>
-            }
-          />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <FileProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Root />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Layout />}>
+            <Route
+              index
+              path="drive"
+              element={
+                <SecureRoute>
+                  <Drive />
+                </SecureRoute>
+              }
+            />
+            <Route
+              path="file/:bucketId"
+              element={
+                <SecureRoute>
+                  <div className="content">
+                    <Bucket />
+                  </div>
+                </SecureRoute>
+              }
+            />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </FileProvider>
   );
 }
 

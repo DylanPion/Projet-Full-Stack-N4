@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { GetBucketById } from "../services/BucketService";
-import { GetFileList } from "../services/FileService";
+import { DeleteFile, GetFileList } from "../services/FileService";
+import Toast from "./Toast";
 
 const Bucket = () => {
   const [bucket, setBucket] = useState({});
   const [fileList, setFileList] = useState([]);
   const { bucketId } = useParams();
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
+  // Get File
   useEffect(() => {
     const getData = async (bucketId) => {
       try {
@@ -15,7 +19,6 @@ const Bucket = () => {
         const responseFileList = await GetFileList(bucketId);
         setBucket(responseBucket.data);
         setFileList(responseFileList.data);
-        console.log(responseFileList.data);
       } catch (error) {
         console.error("Erreur lors de la récupération des fichiers :", error);
       }
@@ -24,10 +27,22 @@ const Bucket = () => {
     getData(bucketId);
   }, [bucketId]);
 
+  // Delete File
+  const handleDeleteSubmit = async (fileId) => {
+    try {
+      await DeleteFile(fileId);
+      console.log("Fichier supprimé avec succès");
+      setToastMessage("fileDelete");
+      setToastOpen(true);
+      window.location.reload();
+    } catch (error) {
+      console.error("Erreur lors de la suppression du fichier :", error);
+    }
+  };
+
   // Fonction pour obtenir l'icône en fonction du type de fichier
   const getFileIcon = (fileName) => {
     const extension = fileName.split(".").pop(); // Récupère l'extension du fichier
-    console.log(extension);
     switch (extension.toLowerCase()) {
       case "pdf":
         return <i className="bx bxs-file-pdf"></i>;
@@ -69,10 +84,18 @@ const Bucket = () => {
             {/* Affiche l'icône en fonction du type de fichier */}
             <h3>{file.fileName.split(".").slice(0, -1).join(".")}</h3>
             {/* Affiche le nom du fichier sans l'extension */}
-            <i className="bx bx-dots-vertical-rounded"></i>
+            <i
+              className="bx bx-trash"
+              onClick={() => handleDeleteSubmit(file.id)}
+            ></i>
           </div>
         ))}
       </div>
+      <Toast
+        open={toastOpen}
+        onClose={() => setToastOpen(false)}
+        toast={toastMessage}
+      />
     </main>
   );
 };

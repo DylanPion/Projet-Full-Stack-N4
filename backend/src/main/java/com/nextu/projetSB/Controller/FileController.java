@@ -5,6 +5,7 @@ import com.nextu.projetSB.Entities.FileData;
 import com.nextu.projetSB.Entities.User;
 import com.nextu.projetSB.Entities.UserDetailsImpl;
 import com.nextu.projetSB.Exceptions.FileContentException;
+import com.nextu.projetSB.Repositories.FileRepository;
 import com.nextu.projetSB.Service.*;
 import io.jsonwebtoken.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class FileController {
     private final UserService userService;
     private final StorageService storageService;
     private final BucketService bucketService;
+    private final FileRepository fileRepository;
 
     //Endpoint pour récupérer un fichier par son nom.
     @GetMapping(value = "/{name}")
@@ -100,6 +102,30 @@ public class FileController {
             return ResponseEntity.ok(fileList);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    // Récupère les dix fichiers les plus récents
+    @GetMapping("/recent")
+    public List<FileData> getRecentFilesForUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User user = userService.findUserById(userDetails.getId());
+
+        return storageService.getRecentFilesByUserId(user.getId().toString());
+    }
+
+    // Supprime un fichier
+    @DeleteMapping("/{fileId}")
+    public void deleteById(@PathVariable String fileId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User user = userService.findUserById(userDetails.getId());
+
+        try {
+            fileRepository.deleteById(fileId);
+        } catch (Exception ex) {
+            throw new RuntimeException("Erreur lors de la suppression du fichier", ex);
         }
     }
 }

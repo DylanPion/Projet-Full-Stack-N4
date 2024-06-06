@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import BucketList from "../components/BucketList";
 import RecentFile from "../components/RecentFile";
-
+import Toast from "../components/Toast";
 const Drive = () => {
   const [isDragOver, setIsDragOver] = useState(false);
 

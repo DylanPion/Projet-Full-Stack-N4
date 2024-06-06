@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import {
   DeleteBucket,
   GetBucketList,
@@ -7,23 +7,54 @@ import {
 import { AddFile } from "../services/FileService";
 import Popup from "./Popup";
 import Modal from "./Modal";
+import Toast from "./Toast";
 import { Link } from "react-router-dom";
 
-const BucketList = ({ onDragOver, onDragLeave }) => {
-  const [bucketList, setBucketList] = useState([]);
-  const [openBucketId, setOpenBucketId] = useState(null); // État pour stocker l'ID du bucket dont le menu est ouvert
-  const [isOpenEditFolder, setIsOpenEditFolder] = useState(false);
-  const [editingBucketId, setEditingBucketId] = useState(null);
-  const [isOpenDeleteFolder, setIsOpenDeleteFolder] = useState(false);
-  const [deletingBucketId, setDeletingBucketId] = useState(null);
-  const [isFileOver, setIsFileOver] = useState(false);
+const initialState = {
+  bucketList: [],
+  openBucketId: null,
+  isOpenEditFolder: false,
+  editingBucketId: null,
+  isOpenDeleteFolder: false,
+  deletingBucketId: null,
+  isFileOver: false,
+  toastOpen: false,
+  toastMessage: "",
+};
 
-  // Get
+function reducer(state, action) {
+  switch (action.type) {
+    case "SET_BUCKET_LIST":
+      return { ...state, bucketList: action.payload };
+    case "SET_OPEN_BUCKET_ID":
+      return { ...state, openBucketId: action.payload };
+    case "SET_IS_OPEN_EDIT_FOLDER":
+      return { ...state, isOpenEditFolder: action.payload };
+    case "SET_EDITING_BUCKET_ID":
+      return { ...state, editingBucketId: action.payload };
+    case "SET_IS_OPEN_DELETE_FOLDER":
+      return { ...state, isOpenDeleteFolder: action.payload };
+    case "SET_DELETING_BUCKET_ID":
+      return { ...state, deletingBucketId: action.payload };
+    case "SET_IS_FILE_OVER":
+      return { ...state, isFileOver: action.payload };
+    case "SET_TOAST_OPEN":
+      return { ...state, toastOpen: action.payload };
+    case "SET_TOAST_MESSAGE":
+      return { ...state, toastMessage: action.payload };
+    default:
+      return state;
+  }
+}
+
+const BucketList = ({ onDragOver, onDragLeave }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await GetBucketList();
-        setBucketList(response.data);
+        dispatch({ type: "SET_BUCKET_LIST", payload: response.data });
       } catch (error) {
         console.error("Erreur lors de la requête :", error);
       }
@@ -32,32 +63,34 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
     fetchData();
   }, []);
 
-  // Edit
   const handleEditSubmit = async (event, bucketId) => {
     event.preventDefault();
     try {
       const formData = new FormData(event.target);
       const data = Object.fromEntries(formData.entries());
       await UpdateBucket(data, bucketId);
-      console.log("Bucket modifié avec succès");
-      setIsOpenEditFolder(false);
-      // Mettre à jour la liste des dossiers sans recharger la page
-      const updatedBucketList = bucketList.map((bucket) =>
+      dispatch({ type: "SET_IS_OPEN_EDIT_FOLDER", payload: false });
+      dispatch({ type: "SET_TOAST_MESSAGE", payload: "bucketEdit" });
+      dispatch({ type: "SET_TOAST_OPEN", payload: true });
+      const updatedBucketList = state.bucketList.map((bucket) =>
         bucket.id === bucketId ? { ...bucket, ...data } : bucket
       );
-      setBucketList(updatedBucketList);
+      dispatch({ type: "SET_BUCKET_LIST", payload: updatedBucketList });
     } catch (error) {
       console.error("Erreur lors de la modification du bucket :", error);
     }
   };
 
-  // Delete
   const handleDeleteSubmit = async (bucketId) => {
     try {
       await DeleteBucket(bucketId);
-      console.log("Bucket supprimé avec succès");
-      setIsOpenDeleteFolder(false);
-      window.location.reload();
+      dispatch({ type: "SET_IS_OPEN_DELETE_FOLDER", payload: false });
+      dispatch({ type: "SET_TOAST_MESSAGE", payload: "bucketDelete" });
+      dispatch({ type: "SET_TOAST_OPEN", payload: true });
+      const updatedBucketList = state.bucketList.filter(
+        (bucket) => bucket.id !== bucketId
+      );
+      dispatch({ type: "SET_BUCKET_LIST", payload: updatedBucketList });
     } catch (error) {
       console.error("Erreur lors de la suppression du bucket :", error);
     }
@@ -66,11 +99,11 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
   const handleDrop = async (event, bucketId) => {
     event.preventDefault();
     try {
-      console.log(event.dataTransfer.files[0]);
       const formData = new FormData();
       formData.append("file", event.dataTransfer.files[0]);
-      console.log("test" + formData);
-      await AddFile(formData, bucketId); // Télécharger le fichier
+      await AddFile(formData, bucketId);
+      dispatch({ type: "SET_TOAST_MESSAGE", payload: "fileCreate" });
+      dispatch({ type: "SET_TOAST_OPEN", payload: true });
     } catch (error) {
       console.error("Erreur lors du glisser-déposer des fichiers :", error);
     }
@@ -78,59 +111,66 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
 
   const handleDragOver = (event) => {
     event.preventDefault();
-    setIsFileOver(true); // Un fichier est actuellement survolé
+    dispatch({ type: "SET_IS_FILE_OVER", payload: true });
     if (onDragOver) {
-      onDragOver(); // Appel du callback fourni par Main
+      onDragOver();
     }
   };
 
-  // Modifier le gestionnaire d'événement handleDragLeave pour mettre à jour l'état
   const handleDragLeave = () => {
-    setIsFileOver(false); // Plus de fichier survolé
+    dispatch({ type: "SET_IS_FILE_OVER", payload: false });
     if (onDragLeave) {
       onDragLeave();
     }
   };
 
   const togglePopup = (bucketId) => {
-    setOpenBucketId(bucketId === openBucketId ? null : bucketId);
+    dispatch({
+      type: "SET_OPEN_BUCKET_ID",
+      payload: bucketId === state.openBucketId ? null : bucketId,
+    });
   };
 
   return (
     <>
       <div className="bucket-list-title">
-        <div className="bucket-list-title">
-          <h1>Mon drive</h1>
-        </div>
+        <h1>Mon drive</h1>
       </div>
       <ul className="bucketList">
-        {bucketList.map((bucket) => (
+        {state.bucketList.map((bucket) => (
           <li
             key={bucket.id}
             onDrop={(event) => handleDrop(event, bucket.id)}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
-            className={`link ${isFileOver ? "file-over" : ""}`}
+            className={`link ${state.isFileOver ? "file-over" : ""}`}
           >
             <Link to={`/dashboard/file/${bucket.id}`}>
               <i className="bx bxs-folder"></i>
               <h3>{bucket.label}</h3>
             </Link>
-
             <i
               className="bx bx-dots-vertical-rounded"
               onClick={() => togglePopup(bucket.id)}
             ></i>
             <Popup
-              open={openBucketId === bucket.id}
-              onClose={() => setOpenBucketId(null)}
+              open={state.openBucketId === bucket.id}
+              onClose={() =>
+                dispatch({ type: "SET_OPEN_BUCKET_ID", payload: null })
+              }
               style="popup-bucket"
             >
               <ul className="infos-bucket">
                 <li
                   onClick={() => {
-                    setIsOpenEditFolder(true);
-                    setEditingBucketId(bucket.id);
+                    dispatch({
+                      type: "SET_IS_OPEN_EDIT_FOLDER",
+                      payload: true,
+                    });
+                    dispatch({
+                      type: "SET_EDITING_BUCKET_ID",
+                      payload: bucket.id,
+                    });
                   }}
                 >
                   <i className="bx bxs-edit"></i>
@@ -138,13 +178,18 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
                 </li>
                 <div className="separator"></div>
                 <Modal
-                  open={isOpenEditFolder}
-                  onClose={() => setIsOpenEditFolder(false)}
+                  open={state.isOpenEditFolder}
+                  onClose={() =>
+                    dispatch({
+                      type: "SET_IS_OPEN_EDIT_FOLDER",
+                      payload: false,
+                    })
+                  }
                 >
                   <form
                     className="form-modal"
                     onSubmit={(event) =>
-                      handleEditSubmit(event, editingBucketId)
+                      handleEditSubmit(event, state.editingBucketId)
                     }
                   >
                     <h2>Modifier le dossier</h2>
@@ -158,26 +203,46 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
                 </Modal>
                 <li
                   onClick={() => {
-                    setIsOpenDeleteFolder(true);
-                    setDeletingBucketId(bucket.id);
+                    dispatch({
+                      type: "SET_IS_OPEN_DELETE_FOLDER",
+                      payload: true,
+                    });
+                    dispatch({
+                      type: "SET_DELETING_BUCKET_ID",
+                      payload: bucket.id,
+                    });
                   }}
                 >
                   <i className="bx bx-trash"></i>
                   <span>Suppression du dossier</span>
                 </li>
                 <Modal
-                  open={isOpenDeleteFolder}
-                  onClose={() => setIsOpenDeleteFolder(false)}
+                  open={state.isOpenDeleteFolder}
+                  onClose={() =>
+                    dispatch({
+                      type: "SET_IS_OPEN_DELETE_FOLDER",
+                      payload: false,
+                    })
+                  }
                 >
                   <form
                     className="form-modal"
-                    onSubmit={(event) => handleDeleteSubmit(deletingBucketId)}
+                    onSubmit={(event) =>
+                      handleDeleteSubmit(state.deletingBucketId)
+                    }
                   >
                     <h2>Voulez-vous vraiment supprimer le dossier ?</h2>
-                    <button onClick={() => setIsOpenDeleteFolder(false)}>
+                    <button type="submit">Supprimer</button>
+                    <button
+                      onClick={() =>
+                        dispatch({
+                          type: "SET_IS_OPEN_DELETE_FOLDER",
+                          payload: false,
+                        })
+                      }
+                    >
                       Annuler
                     </button>
-                    <button type="submit">Supprimer</button>
                   </form>
                 </Modal>
               </ul>
@@ -185,11 +250,16 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
           </li>
         ))}
       </ul>
-      {isFileOver && (
+      {state.isFileOver && (
         <div className="message-dragover">
           <p>Déposer des fichiers pour les importer dans :</p>
         </div>
       )}
+      <Toast
+        open={state.toastOpen}
+        onClose={() => dispatch({ type: "SET_TOAST_OPEN", payload: false })}
+        toast={state.toastMessage}
+      />
     </>
   );
 };

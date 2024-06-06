@@ -100,4 +100,14 @@ public class StorageService {
     public File load(String filename) throws IOException {
         return new File(SERVER_LOCATION + filename);
     }
+
+    /**
+     * Récupère les 10 fichiers les plus récents pour un utilisateur donné.
+     *
+     * @param userId L'identifiant de l'utilisateur.
+     * @return Une liste des 10 fichiers les plus récents de l'utilisateur, ou une liste vide si aucun fichier trouvé.
+     */
+    public List<FileData> getRecentFilesByUserId(String userId) {
+        return fileRepository.findTop5ByUserIdOrderByLocalDateTimeAsc(userId);
+    }
 }
