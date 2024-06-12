@@ -23,9 +23,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Service responsable de la gestion du stockage des fichiers dans le système de fichiers.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -38,9 +35,7 @@ public class StorageService {
     private final BucketService bucketService;
     private final BucketRepository bucketRepository;
 
-    /**
-     * Initialise le service en créant le dossier de stockage s'il n'existe pas déjà.
-     */
+    // Initialise le service en créant le dossier de stockage s'il n'existe pas déjà.
     @PostConstruct
     public void init() {
         try {
@@ -51,24 +46,13 @@ public class StorageService {
         }
     }
 
-    /**
-     * Sauvegarde le fichier et retourne le nom du fichier sauvegardé.
-     *
-     * @param file Le fichier à sauvegarder.
-     * @return Le nom du fichier sauvegardé.
-     * @throws FileContentException Si une erreur survient lors de la sauvegarde du fichier.
-     */
+    // Sauvegarde le fichier et retourne le nom du fichier sauvegardé.
+
     public String save(MultipartFile file, String bucketId, String user) throws FileContentException {
         return copyFile(file, bucketId, user);
     }
 
-    /**
-     * Effectue la copie réelle du fichier dans le dossier de stockage et le sauvegarde en base de données.
-     *
-     * @param file Le fichier à copier.
-     * @return Le nom du fichier copié.
-     * @throws FileContentException Si une erreur survient lors de la copie du fichier.
-     */
+    // Effectue la copie réelle du fichier dans le dossier de stockage et le sauvegarde en base de données.
     private String copyFile(MultipartFile file, String bucketId, String userId) throws FileContentException {
         var fileNameDest = FileUtils.generateStringFromDate(FileUtils.getExtension(file.getOriginalFilename()));
         String filePathDest = SERVER_LOCATION + fileNameDest;
@@ -90,24 +74,42 @@ public class StorageService {
         }
     }
 
-    /**
-     * Récupère un fichier en utilisant le chemin du fichier.
-     *
-     * @param filename Le nom du fichier à charger.
-     * @return L'objet File représentant le fichier chargé.
-     * @throws IOException Si une erreur survient lors du chargement du fichier.
-     */
+    // Récupère un fichier en utilisant le chemin du fichier.
     public File load(String filename) throws IOException {
         return new File(SERVER_LOCATION + filename);
     }
 
-    /**
-     * Récupère les 10 fichiers les plus récents pour un utilisateur donné.
-     *
-     * @param userId L'identifiant de l'utilisateur.
-     * @return Une liste des 10 fichiers les plus récents de l'utilisateur, ou une liste vide si aucun fichier trouvé.
-     */
+    // Récupère les 10 fichiers les plus récents pour un utilisateur donné.
     public List<FileData> getRecentFilesByUserId(String userId) {
         return fileRepository.findTop5ByUserIdOrderByLocalDateTimeAsc(userId);
+    }
+
+    // Vérifie si un fichier avec le nom donné existe dans le référentiel.
+    public boolean checkIfFileExist(String fileName) {
+        // Utilise le repository pour rechercher un fichier par son label (nom)
+        return fileRepository.findByLabel(fileName) != null;
+        // Retourne true si un fichier correspondant est trouvé, sinon false
+    }
+
+    // Supprime le fichier du dossier de stockage sur l'ordinateur.
+    public void deleteFileInStorage(String fileName) throws IOException {
+        Path filePath = Paths.get(SERVER_LOCATION + "/" + fileName);
+        Files.deleteIfExists(filePath);
+    }
+
+    // Supprime tout les fichiers appartenant à un bucket du dossier storage
+    public void deleteFilesBelongingToBucket(String bucketId) {
+        try {
+            Bucket bucket = bucketRepository.findById(bucketId).orElse(null);
+            if (bucket != null) {
+                List<FileData> fileList = bucket.getFiles();
+                for (FileData file : fileList) {
+                    String fileName = file.getLabel();
+                    deleteFileInStorage(fileName);
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Erreur lors de la suppression dzq fichiers dans storage", ex);
+        }
     }
 }

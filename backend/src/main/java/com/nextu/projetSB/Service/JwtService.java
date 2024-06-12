@@ -21,12 +21,7 @@ public class JwtService {
     @Value("${BucketProject.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    /**
-     * Génère un token JWT à partir de l'objet d'authentification.
-     *
-     * @param authentication L'objet d'authentification.
-     * @return Le token JWT généré.
-     */
+    //Génère un token JWT à partir de l'objet d'authentification.
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         return Jwts.builder()
@@ -37,30 +32,20 @@ public class JwtService {
                 .compact();
     }
 
-    /**
-     * Retourne la clé utilisée pour signer les tokens JWT.
-     */
+    // Retourne la clé utilisée pour signer les tokens JWT.
+
     private Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
-    /**
-     * Récupère le nom d'utilisateur à partir du token JWT.
-     *
-     * @param token Le token JWT.
-     * @return Le nom d'utilisateur extrait du token.
-     */
+    //Récupère le nom d'utilisateur à partir du token JWT.
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key()).build()
                 .parseClaimsJws(token).getBody().getSubject();
     }
 
-    /**
-     * Valide un token JWT en vérifiant sa signature et sa validité temporelle.
-     *
-     * @param authToken Le token JWT à valider.
-     * @return true si le token est valide, sinon false.
-     */
+    //Valide un token JWT en vérifiant sa signature et sa validité temporelle.
+
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);

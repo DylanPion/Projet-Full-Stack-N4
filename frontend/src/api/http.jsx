@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// Création d'intercepteur de requête pour agir sur la requête
+// Création d'un intercepteur de requête
 
 // Récupère le token
 function getLocalAccessToken() {

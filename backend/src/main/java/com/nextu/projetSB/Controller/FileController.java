@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/files")
 @Slf4j
 public class FileController {
-    private final FileService fileService;
     private final UserService userService;
     private final StorageService storageService;
     private final BucketService bucketService;
@@ -42,7 +41,7 @@ public class FileController {
     public ResponseEntity<?> find(@PathVariable String name) {
 
         // Vérifie si le fichier existe
-        if (fileService.checkIfFileExist(name)) {
+        if (storageService.checkIfFileExist(name)) {
             try {
                 // Charge le fichier à partir du service de stockage
                 File file = this.storageService.load(name);
@@ -68,7 +67,6 @@ public class FileController {
     }
 
     //Endpoint pour sauvegarder un fichier
-    // Nouvelle méthode pour sauvegarder un fichier associé à un bucket
     @PostMapping("/save/{bucketId}")
     public ResponseEntity<String> saveFileForUser(@RequestPart("file") MultipartFile file, @PathVariable String bucketId) {
 
@@ -90,7 +88,7 @@ public class FileController {
     }
 
     // Récupère la liste des fichiers d'un utilisateur à partir de l'identifiant du bucket.
-    @GetMapping(value = "/{bucketId}", produces = { "application/json", "application/xml" })
+    @GetMapping(value = "/{bucketId}", produces = {"application/json", "application/xml"})
     public ResponseEntity<List<FileData>> getUserFiles(@PathVariable String bucketId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -107,7 +105,7 @@ public class FileController {
 
     // Récupère les dix fichiers les plus récents
     @GetMapping("/recent")
-    public List<FileData> getRecentFilesForUser(){
+    public List<FileData> getRecentFilesForUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         User user = userService.findUserById(userDetails.getId());
@@ -123,7 +121,11 @@ public class FileController {
         User user = userService.findUserById(userDetails.getId());
 
         try {
-            fileRepository.deleteById(fileId);
+            FileData fileData = fileRepository.findById(fileId).orElse(null);
+            if (fileData != null) {
+                storageService.deleteFileInStorage(fileData.getLabel());
+                fileRepository.deleteById(fileId);
+            }
         } catch (Exception ex) {
             throw new RuntimeException("Erreur lors de la suppression du fichier", ex);
         }

@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import { Authenticate } from "../services/UserServices";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  // Vide les données du cache, un utilisateur qui se déconnecte et rediriger ici on vide donc ses informations (token et email)
+  useEffect(() => {
+    localStorage.removeItem("user-token");
+    localStorage.removeItem("user-refreshToken");
+    localStorage.removeItem("user-email");
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -24,6 +31,7 @@ const Login = () => {
       console.error("Erreur lors de la connexion :" + error);
     }
   };
+
   return (
     <div className="login-page">
       <div className="logo">

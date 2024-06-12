@@ -14,10 +14,24 @@ function App() {
     <FileProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Root />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<Layout />}>
+          <Route
+            path="/"
+            element={
+              <SecureRoute>
+                <Root />
+              </SecureRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <SecureRoute>
+                <Layout />
+              </SecureRoute>
+            }
+          >
             <Route
               index
               path="drive"

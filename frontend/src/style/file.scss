@@ -44,7 +44,20 @@
   color: var(--dark);
 }
 
-.file-item .bx-dots-vertical-rounded {
+.file-item .bx-trash {
   position: absolute;
-  right: 10px;
+  right: 35px;
+}
+
+.file-item .bx-share {
+  position: absolute;
+  right: 1px;
+}
+
+.file-item .bx-trash:hover {
+  color: red;
+}
+
+.file-item .bx-share:hover {
+  color: green;
 }

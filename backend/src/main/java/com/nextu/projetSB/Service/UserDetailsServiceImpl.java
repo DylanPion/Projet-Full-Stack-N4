@@ -14,13 +14,8 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
-    /**
-     * Récupère un utilisateur à partir de son nom d'utilisateur, puis crée un objet UserDetailsImpl basé sur cet utilisateur.
-     *
-     * @param username Le nom d'utilisateur de l'utilisateur à charger.
-     * @return Un objet UserDetailsImpl représentant les détails de l'utilisateur.
-     * @throws UsernameNotFoundException Si aucun utilisateur n'est trouvé avec le nom d'utilisateur spécifié.
-     */
+    // Récupère un utilisateur à partir de son nom d'utilisateur, puis crée un objet UserDetailsImpl basé sur cet utilisateur.
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Recherche de l'utilisateur dans le repository par son nom d'utilisateur

@@ -29,23 +29,11 @@ import java.util.List;
         @DocumentReference
         private List<Bucket> buckets;
 
-        @DocumentReference
-        private List<FileData> files;
-
         public void addBucket(Bucket bucket) {
             if (this.buckets == null) {
                 this.buckets = new ArrayList<>();
             }
             this.buckets.add(bucket);
-        }
-
-        @Version
-        private Long version;
-        public void addFile(FileData fileData){
-            if(this.files==null){
-                this.files = new ArrayList<>();
-            }
-            this.files.add(fileData);
         }
     }
 

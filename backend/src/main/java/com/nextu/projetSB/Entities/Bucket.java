@@ -19,9 +19,6 @@ public class Bucket {
     private String id;
     private String label;
     private String description;
-
-    @Version
-    private Long version;
     @DocumentReference
     private List<FileData> files;
 

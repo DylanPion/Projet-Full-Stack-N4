@@ -34,15 +34,15 @@ public class AuthController {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
 
+    // Url de test au backend
+    @GetMapping("/test")
+    public String test() {
+        return "{\"message\": \"test\"}";
+    }
+
     //Endpoint pour l'inscription d'un nouvel utilisateur.
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-      /*  if (userService.isUserExists(signUpRequest.getEmail())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("L'utilisateur existe déjà");
-        } else {
-            User user = userService.registerUser(signUpRequest);
-            return ResponseEntity.ok().body(user);
-        }*/
         User user = userService.registerUser(signUpRequest);
         return ResponseEntity.ok().body(user);
     }

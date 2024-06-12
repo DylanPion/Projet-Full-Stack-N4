@@ -1,3 +1,4 @@
+# Fichier combiné
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,9 +16,23 @@ spec:
     spec:
       containers:
         - name: spring-boot-backend
-          image: dylanpion/backend-spring-boot
+          image: dylanpion/springboot-image
           ports:
             - containerPort: 8080
           env:
             - name: SPRING_DATA_MONGODB_URI
-              value: mongodb://user:password@mongodb:27017/storage
+              value: mongodb://mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: fullstack-n4
+spec:
+  selector:
+    app: spring-boot-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: NodePort

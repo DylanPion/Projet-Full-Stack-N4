@@ -33,10 +33,10 @@ const SideBar = () => {
           <span>Next-u</span> Drive
         </div>
       </a>
-      <div className="newButton">
+      <button onClick={() => setIsOpenPopup(true)} className="newButton">
         <i className="bx bx-plus"></i>
-        <span onClick={() => setIsOpenPopup(true)}> Nouveau</span>
-      </div>
+        <span> Nouveau</span>
+      </button>
       <ul className="side-menu">
         <li>
           <NavLink to="/dashboard/drive" className="link">
@@ -66,7 +66,7 @@ const SideBar = () => {
       </ul>
       <ul className="side-menu">
         <li>
-          <NavLink to="/logout" className="link logout">
+          <NavLink to="/login" className="link logout">
             <i className="bx bx-log-out-circle"></i>
             Logout
           </NavLink>

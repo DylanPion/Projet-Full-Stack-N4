@@ -27,10 +27,6 @@ public class UserService {
     // Inscript utilisateur
     public User registerUser(SignUpRequest signUpRequest){
         try {
-
-            /*if (userRepository.findByLogin(signUpRequest.getLogin()) != null){
-                throw new UserException("Login déjà utilisé");
-            }*/
             User user = new User();
             user.setLogin(signUpRequest.getLogin());
             user.setPassword(encoder.encode(signUpRequest.getPassword()));
@@ -48,22 +44,12 @@ public class UserService {
         return userRepository.findByLogin(email) != null;
     }
 
-    /**
-     * Récupère un utilisateur grâce à son ID.
-     *
-     * @param id L'ID de l'utilisateur à rechercher.
-     * @return L'utilisateur correspondant à l'ID ou null s'il n'existe pas.
-     */
+    // Récupère un utilisateur grâce à son ID.
     public User findUserById(String id) {
         return userRepository.findById(id).orElse(null);
     }
 
-    /**
-     * Récupère un utilisateur par son ID et le retourne sous forme de DTO.
-     *
-     * @param id L'ID de l'utilisateur à rechercher.
-     * @return Un objet UserGetDTO représentant les informations de l'utilisateur, ou null s'il n'existe pas.
-     */
+    // Récupère un utilisateur par son ID et le retourne sous forme de DTO.
     public UserGetDTO findById(String id) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
@@ -72,12 +58,7 @@ public class UserService {
         return getUserGetDTO(user);
     }
 
-    /**
-     * Crée un utilisateur et retourne ses informations sous forme de DTO.
-     *
-     * @return Un objet UserGetDTO représentant les informations de l'utilisateur créé.
-     * @throws RuntimeException Si une erreur survient lors de la création de l'utilisateur.
-     */
+    // Crée un utilisateur et retourne ses informations sous forme de DTO.
     public User create(UserCreateDTO userDTO) {
             User user = new User();
             user.setFirstName(userDTO.getFirstName());
@@ -88,15 +69,7 @@ public class UserService {
             return user;
     }
 
-    /**
-     * Modifie un utilisateur existant.
-     *
-     * @param id              L'ID de l'utilisateur à modifier.
-     * @param userCreateDTO   Les nouvelles informations de l'utilisateur sous forme de DTO.
-     * @return L'objet UserCreateDTO représentant les nouvelles informations de l'utilisateur.
-     * @throws IllegalArgumentException Si l'utilisateur avec l'ID spécifié n'est pas trouvé.
-     * @throws RuntimeException         Si une erreur survient lors de la modification de l'utilisateur.
-     */
+    // Modifie un utilisateur existant.
     public UserCreateDTO update(String id, UserCreateDTO userCreateDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé avec l'ID: " + id));
 
@@ -114,13 +87,7 @@ public class UserService {
         }
     }
 
-    /**
-     * Met à jour l'utilisateur à partir d'un objet User.
-     *
-     * @param user L'utilisateur à mettre à jour.
-     * @return L'utilisateur mis à jour.
-     * @throws RuntimeException Si une erreur survient lors de la mise à jour de l'utilisateur.
-     */
+    // Met à jour l'utilisateur à partir d'un objet User.
     public User updateUser(User user) {
         try {
             return userRepository.save(user);
@@ -129,12 +96,7 @@ public class UserService {
         }
     }
 
-    /**
-     * Supprime un utilisateur par son ID.
-     *
-     * @param id L'ID de l'utilisateur à supprimer.
-     * @throws RuntimeException Si une erreur survient lors de la suppression de l'utilisateur.
-     */
+    //Supprime un utilisateur par son ID.
     public void deleteById(String id) {
         try {
             userRepository.deleteById(id);
@@ -143,13 +105,8 @@ public class UserService {
         }
     }
 
-    /**
-     * Sauvegarde un fichier lié à l'utilisateur.
-     *
-     * @param userId   L'ID de l'utilisateur auquel le fichier est lié.
-     * @param fileName Le nom du fichier à sauvegarder.
-     * @throws Exception Si une erreur survient lors de la sauvegarde du fichier.
-     */
+
+     //Sauvegarde un fichier lié à l'utilisateur.
   /*  public void saveFileByUserId(String userId, String fileName) throws Exception {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
@@ -163,12 +120,7 @@ public class UserService {
         }
     }
 */
-    /**
-     * Crée un objet UserGetDTO à partir d'un objet User.
-     *
-     * @param user L'utilisateur dont les informations seront converties en DTO.
-     * @return Un objet UserGetDTO représentant les informations de l'utilisateur.
-     */
+    //Crée un objet UserGetDTO à partir d'un objet User.
     private static UserGetDTO getUserGetDTO(User user) {
         UserGetDTO userGetDTO = new UserGetDTO();
         userGetDTO.setId(user.getId());

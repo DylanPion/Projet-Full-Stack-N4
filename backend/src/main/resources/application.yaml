@@ -8,7 +8,12 @@
 spring:
   data:
     mongodb:
-      uri: mongodb.fullstack-n4://user:password@mongodb:27017/storage
+      host: mongo
+      port: 27017
+      database: storage
+
+#mailer-uri: http://localhost:9090/api/mailer/
+mailer-uri: http://symfony-mailer-service/api/mailer
 
 BucketProject:
   filestore: /Users/dylanpion/Desktop/filestore
@@ -17,3 +22,7 @@ BucketProject:
     jwtRefreshSecret: jqhkfhilieufizefhiuxhxhh137373uddjshkjqshfhfkjqhkfhilieufizef
     jwtExpirationMs: 60000000
     jwtRefreshExpirationMs: 900000
+
+react:
+  host: ${REACT_HOST:localhost}
+  port: ${REACT_PORT:5173}

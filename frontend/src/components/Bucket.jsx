@@ -3,13 +3,17 @@ import { Link, useParams } from "react-router-dom";
 import { GetBucketById } from "../services/BucketService";
 import { DeleteFile, GetFileList } from "../services/FileService";
 import Toast from "./Toast";
+import { SharingMail } from "../services/MailerService";
+import Modal from "./Modal";
 
 const Bucket = () => {
+  const { bucketId } = useParams();
   const [bucket, setBucket] = useState({});
   const [fileList, setFileList] = useState([]);
-  const { bucketId } = useParams();
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [isOpenSharingModal, setIsOpenSharingModal] = useState(false);
+  const [sharedEmail, setSharedEmail] = useState("");
 
   // Get File
   useEffect(() => {
@@ -37,6 +41,30 @@ const Bucket = () => {
       window.location.reload();
     } catch (error) {
       console.error("Erreur lors de la suppression du fichier :", error);
+    }
+  };
+
+  // Open sharing modal
+  const openModal = () => {
+    setIsOpenSharingModal(true);
+  };
+
+  // Close sharing modal
+  const closeModal = () => {
+    setIsOpenSharingModal(false);
+  };
+
+  const handleSharedEmailChange = (event) => {
+    setSharedEmail(event.target.value);
+  };
+  // Share Document
+  const handleShareSubmit = async (event) => {
+    try {
+      event.preventDefault(); // Pour éviter le comportement par défaut du formulaire
+      await SharingMail(sharedEmail);
+      console.log("Service email lancé");
+    } catch (error) {
+      console.log("Erreur lors du partage");
     }
   };
 
@@ -88,6 +116,7 @@ const Bucket = () => {
               className="bx bx-trash"
               onClick={() => handleDeleteSubmit(file.id)}
             ></i>
+            <i className="bx bx-share" onClick={() => openModal()}></i>
           </div>
         ))}
       </div>
@@ -96,6 +125,19 @@ const Bucket = () => {
         onClose={() => setToastOpen(false)}
         toast={toastMessage}
       />
+      <Modal open={isOpenSharingModal} onClose={closeModal}>
+        <form onSubmit={handleShareSubmit}>
+          <label htmlFor="email">Partager le fichier :</label>
+          <input
+            type="email"
+            id="email"
+            required
+            value={sharedEmail}
+            onChange={handleSharedEmailChange}
+          />
+          <button>OK</button>
+        </form>
+      </Modal>
     </main>
   );
 };

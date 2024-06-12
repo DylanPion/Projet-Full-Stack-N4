@@ -22,6 +22,7 @@ import java.util.List;
 public class BucketController {
     private final BucketService bucketService;
     private final UserService userService;
+    private final StorageService storageService;
 
     //Crée un nouveau Bucket pour l'utilisateur.
     @PostMapping(value = "/", produces = { "application/json", "application/xml" })
@@ -78,7 +79,8 @@ public class BucketController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         User user = userService.findUserById(userDetails.getId());
 
-        bucketService.deleteById(bucketId);
+        storageService.deleteFilesBelongingToBucket(bucketId);
+        bucketService.deleteBucketAndHisFile(bucketId);
         userService.updateUser(user);
         return ResponseEntity.ok(null);
     }

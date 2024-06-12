@@ -8,10 +8,14 @@ export default defineConfig({
     host: true,
     proxy: {
       "/api": {
-        //target: "http://spring-boot-container:8080/", // met en commun le port de l'url du front avec le back pour éviter le CROSS
-        target: "http://backend-service.fullstack-n4:8080",
+        target: "http://nextudrive.fr",
+        //target: "http://localhost:8080",
         changeOrigin: true,
       },
+      // "/api/mailer": {
+      //   target: "http://localhost:9090", // URL pour le mailer
+      //   changeOrigin: true,
+      // },
     },
   },
 });

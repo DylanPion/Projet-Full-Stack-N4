@@ -20,20 +20,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 
 @Configuration
-@EnableMethodSecurity
+@EnableMethodSecurity // Active la sécurité basée sur les annotations des méthodes
 @RequiredArgsConstructor
 // Configuration de sécurité pour l'applicaton
 public class WebSecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPointJwt unauthorizedHandler;
 
-    // Instancie le filtre pour le mettre en place
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
-
-    // Définit un encodeur de mots de passe
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

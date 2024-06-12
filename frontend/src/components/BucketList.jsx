@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import {
   DeleteBucket,
   GetBucketList,
@@ -50,6 +50,7 @@ function reducer(state, action) {
 const BucketList = ({ onDragOver, onDragLeave }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  // Récupère la liste des Buckets
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -57,12 +58,14 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
         dispatch({ type: "SET_BUCKET_LIST", payload: response.data });
       } catch (error) {
         console.error("Erreur lors de la requête :", error);
+        setToastMessage("Erreur lors de la récupération des données");
+        setToastOpen(true);
       }
     };
-
     fetchData();
   }, []);
 
+  // Modification du Bucket
   const handleEditSubmit = async (event, bucketId) => {
     event.preventDefault();
     try {
@@ -81,6 +84,7 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
     }
   };
 
+  // Suppression du Bucket
   const handleDeleteSubmit = async (bucketId) => {
     try {
       await DeleteBucket(bucketId);
@@ -96,12 +100,15 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
     }
   };
 
+  // Début gesion Drag And Drop du Fichier
   const handleDrop = async (event, bucketId) => {
     event.preventDefault();
     try {
       const formData = new FormData();
       formData.append("file", event.dataTransfer.files[0]);
       await AddFile(formData, bucketId);
+      onDragLeave(); // Quitte le drag and drop pour enlever le style drag car le fichier est sauvegatder
+      dispatch({ type: "SET_IS_FILE_OVER", payload: false });
       dispatch({ type: "SET_TOAST_MESSAGE", payload: "fileCreate" });
       dispatch({ type: "SET_TOAST_OPEN", payload: true });
     } catch (error) {
@@ -112,6 +119,7 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
   const handleDragOver = (event) => {
     event.preventDefault();
     dispatch({ type: "SET_IS_FILE_OVER", payload: true });
+    console.log("1");
     if (onDragOver) {
       onDragOver();
     }
@@ -119,10 +127,12 @@ const BucketList = ({ onDragOver, onDragLeave }) => {
 
   const handleDragLeave = () => {
     dispatch({ type: "SET_IS_FILE_OVER", payload: false });
+    console.log("2");
     if (onDragLeave) {
       onDragLeave();
     }
   };
+  // Fin gesion Drag And Drop du Fichier
 
   const togglePopup = (bucketId) => {
     dispatch({
