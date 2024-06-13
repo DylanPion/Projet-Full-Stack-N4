@@ -12,10 +12,6 @@ export default defineConfig({
         //target: "http://localhost:8080",
         changeOrigin: true,
       },
-      // "/api/mailer": {
-      //   target: "http://localhost:9090", // URL pour le mailer
-      //   changeOrigin: true,
-      // },
     },
   },
 });
